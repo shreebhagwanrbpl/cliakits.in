@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  --primary: #0f6cbd;
-  --secondary: #14b8a6;
-  --text: #0f172a;
-  --muted: #64748b;
+  --primary: #667A32;
+  --secondary: #8DA64A;
+  --text: #283616;
+  --muted: #5D6A49;
   --bg: #f8fafc;
   --white: #ffffff;
-  --border: #e2e8f0;
+  --border: #D6DEC0;
 }
 
 *,
@@ -228,7 +228,7 @@ header {
       transparent);
   animation: shimmer 1.8s infinite;
 }
-/* UNIQUE UI SYSTEM — VERSION 20 / Olive Diagnostics */
+/* UNIQUE UI SYSTEM — VERSION 20 / Raj Biosis */
 :root{--vp:#667a32;--va:#8da64a;--vs:#f0f5e3;--vb:#fafcf7;--vt:#303b18;--vm:#6e7660;}
 body.variant-20{background:var(--vb);color:var(--vt);}
 body.variant-20 header{background:color-mix(in srgb,var(--vb) 90%,transparent)!important;border-color:color-mix(in srgb,var(--vp) 24%,transparent)!important;box-shadow:0 12px 40px color-mix(in srgb,var(--vp) 12%,transparent)!important;position:sticky;}
@@ -237,16 +237,29 @@ body.variant-20 main{background:var(--vb);}
 body.variant-20 main section{border-color:color-mix(in srgb,var(--vp) 18%,transparent)!important;}
 body.variant-20 main h1,body.variant-20 main h2,body.variant-20 main h3,body.variant-20 main h4{color:var(--vt)!important;}
 body.variant-20 main p{color:var(--vm)!important;}
-body.variant-20 main a[class*="bg-[#C05800]"],body.variant-20 main button[class*="bg-[#C05800]"],body.variant-20 .primary-btn{background:var(--vp)!important;}
-body.variant-20 main a[class*="text-[#C05800]"],body.variant-20 main span[class*="text-[#C05800]"]{color:var(--vp)!important;}
+body.variant-20 main a[class*="bg-[#667A32]"],body.variant-20 main button[class*="bg-[#667A32]"],body.variant-20 .primary-btn{background:var(--vp)!important;}
+body.variant-20 main a[class*="text-[#667A32]"],body.variant-20 main span[class*="text-[#667A32]"]{color:var(--vp)!important;}
 body.variant-20 main input:focus{border-color:var(--vp)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--vp) 15%,transparent)!important;}
-body.variant-20 main [class*="border-[#E8D3BC"]{border-color:color-mix(in srgb,var(--vp) 20%,transparent)!important;}
-body.variant-20 main [class*="bg-[#FFF9EF"]{background-color:var(--vs)!important;}
-body.variant-20 main [class*="bg-[#FDFBD4"]{background-color:color-mix(in srgb,var(--vs) 60%,var(--vb))!important;}
-body.variant-20 main [class*="bg-[#F3E4D2"]{background-color:color-mix(in srgb,var(--vs) 42%,var(--vb))!important;}
+body.variant-20 main [class*="border-[#D6DEC0"]{border-color:color-mix(in srgb,var(--vp) 20%,transparent)!important;}
+body.variant-20 main [class*="bg-[#F5F7EC"]{background-color:var(--vs)!important;}
+body.variant-20 main [class*="bg-[#EAF0D6"]{background-color:color-mix(in srgb,var(--vs) 60%,var(--vb))!important;}
+body.variant-20 main [class*="bg-[#DEE6CC"]{background-color:color-mix(in srgb,var(--vs) 42%,var(--vb))!important;}
 body.variant-20 main [class*="shadow"]{box-shadow:0 20px 50px color-mix(in srgb,var(--vp) 10%,transparent)!important;}
 body.variant-20 .section-padding{padding-block:83px;}
 body.variant-20 main .rounded-3xl{border-radius:30px!important;}
 body.variant-20 main .rounded-2xl{border-radius:10px!important;}
-body.variant-20 main .primary-btn,body.variant-20 main a[class*="bg-[#C05800]"],body.variant-20 main button[class*="bg-[#C05800]"]{border-radius:9px!important;}
+body.variant-20 main .primary-btn,body.variant-20 main a[class*="bg-[#667A32]"],body.variant-20 main button[class*="bg-[#667A32]"]{border-radius:9px!important;}
 body.variant-20 main section{border-radius:0 0 72px 72px;}
+
+/* OLIVE THEME — button/icon contrast safeguard */
+.primary-btn,
+body.variant-20 main a[class*="bg-[#667A32]"],
+body.variant-20 main button[class*="bg-[#667A32]"] {
+  color: #ffffff !important;
+}
+.primary-btn svg,
+body.variant-20 main a[class*="bg-[#667A32]"] svg,
+body.variant-20 main button[class*="bg-[#667A32]"] svg {
+  color: #ffffff !important;
+  stroke: currentColor;
+}

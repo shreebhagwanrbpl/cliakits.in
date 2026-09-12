@@ -189,7 +189,7 @@ const getWebsiteDomain = () => {
             return host;
         }
     }
-    return "clinidix.com";
+    return "cliakits.in";
 };
 
 export default function ProductDetails({ slug }) {
@@ -376,7 +376,7 @@ export default function ProductDetails({ slug }) {
         const loadContact = async () => {
             try {
                 const snap = await getDoc(
-                    doc(db, "websites", "clinidixcom", "pages", "contact")
+                    doc(db, "websites", "cliakitsin", "pages", "contact")
                 );
                 if (snap.exists()) {
                     setContactInfo(snap.data().contactInfo || []);
@@ -428,12 +428,12 @@ export default function ProductDetails({ slug }) {
             const pageHeight = 297;
             const contentWidth = pageWidth - 2 * margin;
 
-            // Clinidix Theme Colors
-            const colorPrimary = [192, 88, 0];       // #C05800 Brand Orange
-            const colorDark = [56, 36, 13];          // #38240D Deep Brown Text
-            const colorGray = [91, 70, 52];          // #5B4634 Subtitle Text
-            const colorLightBorder = [232, 211, 188];// #E8D3BC Light Border
-            const colorBgWarm = [255, 249, 239];     // #FFF9EF Warm Background
+            //  Theme Colors
+            const colorPrimary = [192, 88, 0];       // #667A32 Brand Orange
+            const colorDark = [56, 36, 13];          // #283616 Deep Brown Text
+            const colorGray = [91, 70, 52];          // #4C5B38 Subtitle Text
+            const colorLightBorder = [232, 211, 188];// #D6DEC0 Light Border
+            const colorBgWarm = [255, 249, 239];     // #F5F7EC Warm Background
 
             // 1. HEADER
             let headerLeftOffset = margin;
@@ -656,7 +656,7 @@ export default function ProductDetails({ slug }) {
                 collection(
                     db,
                     "websitesQueries",
-                    "clinidixcom",
+                    "cliakitsin",
                     "productQueries"
                 ),
                 {
@@ -808,7 +808,7 @@ ${product?.desc}
         md:h-[520px]
         rounded-[36px]
         bg-gradient-to-br
-        from-[#F3D8B3]
+        from-[#E1E8D0]
         via-[#FDBD4]
         to-white
         animate-pulse
@@ -827,7 +827,7 @@ ${product?.desc}
           h-12
           w-3/4
           bg-gradient-to-r
-          from-[#F3D8B3]
+          from-[#E1E8D0]
           to-[#FDBD4]
           rounded-xl
           animate-pulse
@@ -844,7 +844,7 @@ ${product?.desc}
                                     className="
             h-6
             bg-gradient-to-r
-            from-[#F3D8B3]
+            from-[#E1E8D0]
             to-[#FDBD4]
             rounded-lg
             animate-pulse
@@ -880,7 +880,7 @@ ${product?.desc}
         md:p-8
         shadow-sm
         border
-        border-[#E8CFA8]
+        border-[#D8E0C5]
         "
                         >
 
@@ -889,7 +889,7 @@ ${product?.desc}
           h-10
           w-48
           bg-gradient-to-r
-          from-[#F3D8B3]
+          from-[#E1E8D0]
           to-[#FDBD4]
           rounded-lg
           animate-pulse
@@ -906,7 +906,7 @@ ${product?.desc}
                                     className="
             h-14
             bg-gradient-to-r
-            from-[#F3D8B3]
+            from-[#E1E8D0]
             to-[#FDBD4]
             rounded-2xl
             animate-pulse
@@ -935,7 +935,7 @@ ${product?.desc}
         md:p-8
         shadow-sm
         border
-        border-[#E8CFA8]
+        border-[#D8E0C5]
         "
                         >
 
@@ -944,7 +944,7 @@ ${product?.desc}
           h-10
           w-60
           bg-gradient-to-r
-          from-[#F3D8B3]
+          from-[#E1E8D0]
           to-[#FDBD4]
           rounded-lg
           animate-pulse
@@ -961,7 +961,7 @@ ${product?.desc}
                                     className="
             h-5
             bg-gradient-to-r
-            from-[#F3D8B3]
+            from-[#E1E8D0]
             to-[#FDBD4]
             rounded
             animate-pulse
@@ -1018,12 +1018,12 @@ ${product?.desc}
   overflow-hidden
   rounded-[28px]
   border
-  border-[#E8D3BC]
+  border-[#D6DEC0]
   bg-gradient-to-b
-  from-[#FFF9EF]
+  from-[#F5F7EC]
   to-white
   shadow-xl
-  shadow-[#C05800]/10
+  shadow-[#667A32]/10
   sm:h-[420px]
   md:h-[500px]
   lg:h-[540px]
@@ -1041,8 +1041,8 @@ ${product?.desc}
     z-20
     rounded-full
     bg-gradient-to-r
-    from-[#713600]
-    to-[#C05800]
+    from-[#4F6225]
+    to-[#667A32]
     px-4
     py-2
     text-xs
@@ -1093,7 +1093,7 @@ ${product?.desc}
           items-center
           justify-center
           bg-gradient-to-br
-          from-[#F3D8B3]
+          from-[#E1E8D0]
           via-white
           to-[#FDBD4]
           animate-pulse
@@ -1106,8 +1106,8 @@ ${product?.desc}
             w-20
             rounded-full
             border-4
-            border-[#E8CFA8]
-            border-t-[#713600]
+            border-[#D8E0C5]
+            border-t-[#4F6225]
             animate-spin
             "
                                             />
@@ -1130,10 +1130,10 @@ ${product?.desc}
                                         />
                                     ) : (
                                         <div className="flex h-full w-full flex-col items-center justify-center p-8 text-center">
-                                            <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-white border border-[#E8CFA8] text-[#C05800] shadow-md">
+                                            <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-white border border-[#D8E0C5] text-[#667A32] shadow-md">
                                                 <Microscope size={38} />
                                             </div>
-                                            <span className="mt-4 text-sm font-bold uppercase tracking-wider text-[#713600]">
+                                            <span className="mt-4 text-sm font-bold uppercase tracking-wider text-[#4F6225]">
                                                 {product.category || "Biomedical Analyzer"}
                                             </span>
                                         </div>
@@ -1155,8 +1155,8 @@ ${product?.desc}
                                     }}
                                     className={`group relative h-20 w-20 overflow-hidden rounded-2xl border-2 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg
       ${selectedMedia === "image" && selectedImage === img
-                                            ? "border-[#C05800] shadow-lg shadow-[#C05800]/20"
-                                            : "border-[#E8CFA8] hover:border-[#C05800]"
+                                            ? "border-[#667A32] shadow-lg shadow-[#667A32]/20"
+                                            : "border-[#D8E0C5] hover:border-[#667A32]"
                                         }`}
                                 >
                                     <Image
@@ -1178,8 +1178,8 @@ ${product?.desc}
                                     className={`group flex h-20 w-20 flex-col items-center justify-center rounded-2xl border-2 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg
 
       ${selectedMedia === "video"
-                                            ? "border-#E8CFA8 bg-#E8CFA80 shadow-lg shadow-#E8CFA8"
-                                            : "border-#E8CFA8 hover:border-#E8CFA8 hover:bg-#E8CFA80"
+                                            ? "border-#D8E0C5 bg-#D8E0C50 shadow-lg shadow-#D8E0C5"
+                                            : "border-#D8E0C5 hover:border-#D8E0C5 hover:bg-#D8E0C50"
                                         }`}
                                 >
 
@@ -1206,7 +1206,7 @@ ${product?.desc}
                                     href={product.pdf}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="group flex h-20 w-20 flex-col items-center justify-center rounded-2xl border-2 border-#E8CFA8 transition-all duration-300 hover:-translate-y-1 hover:border-#E8CFA8 hover:bg-#E8CFA80 hover:shadow-lg"
+                                    className="group flex h-20 w-20 flex-col items-center justify-center rounded-2xl border-2 border-#D8E0C5 transition-all duration-300 hover:-translate-y-1 hover:border-#D8E0C5 hover:bg-#D8E0C50 hover:shadow-lg"
                                 >
 
                                     <span className="text-2xl">
@@ -1245,15 +1245,15 @@ ${product?.desc}
             inline-flex
             rounded-full
             border
-            border-[#C05800]/30
-            bg-[#FFF9EF]
+            border-[#667A32]/30
+            bg-[#F5F7EC]
             px-4
             py-1.5
             text-xs
             font-bold
             uppercase
             tracking-wider
-            text-[#C05800]
+            text-[#667A32]
             shadow-sm
             "
                                 >
@@ -1269,7 +1269,7 @@ ${product?.desc}
             text-2xl
             font-black
             leading-tight
-            text-[#38240D]
+            text-[#283616]
             sm:text-3xl
             md:text-4xl
             lg:text-5xl
@@ -1283,7 +1283,7 @@ ${product?.desc}
                                 {/* Dynamic Price & Availability from Admin (Commented out as requested) */}
                                 {/* {product.price && String(product.price).trim() && (
                                     <div className="mt-3.5 flex items-center gap-3">
-                                        <span className="text-2xl sm:text-3xl font-black text-[#C05800]">
+                                        <span className="text-2xl sm:text-3xl font-black text-[#667A32]">
                                             ₹ {product.price}
                                         </span>
                                         <span className="rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1 text-xs font-bold text-emerald-700">
@@ -1297,7 +1297,7 @@ ${product?.desc}
                                     <button
                                         onClick={handleDownloadBrochure}
                                         disabled={downloadingBrochure}
-                                        className="group inline-flex items-center gap-2.5 rounded-2xl bg-[#C05800] px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#C05800]/25 transition-all duration-300 hover:-translate-y-1 hover:bg-[#E06D00] hover:shadow-xl hover:shadow-[#C05800]/35 disabled:cursor-not-allowed disabled:opacity-75"
+                                        className="group inline-flex items-center gap-2.5 rounded-2xl bg-[#667A32] px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#667A32]/25 transition-all duration-300 hover:-translate-y-1 hover:bg-[#7E963D] hover:shadow-xl hover:shadow-[#667A32]/35 disabled:cursor-not-allowed disabled:opacity-75"
                                     >
                                         {downloadingBrochure ? (
                                             <>
@@ -1342,17 +1342,17 @@ ${product?.desc}
             justify-center
             rounded-full
             border
-            border-[#E8CFA8]
+            border-[#D8E0C5]
             bg-white
-            text-[#713600]
+            text-[#4F6225]
             shadow-lg
-            shadow-[#E8CFA8]
+            shadow-[#D8E0C5]
             transition-all
             duration-300
             hover:-translate-y-1
-            hover:border-[#C05800]
+            hover:border-[#667A32]
             hover:bg-[#FDBD4]
-            hover:text-[#C05800]
+            hover:text-[#667A32]
             hover:shadow-xl
             "
                                     aria-label="Share Product"
@@ -1384,11 +1384,11 @@ ${product?.desc}
                 overflow-hidden
                 rounded-2xl
                 border
-                border-[#E8CFA8]
+                border-[#D8E0C5]
                 bg-white
                 p-2
                 shadow-2xl
-                shadow-[#E8CFA8]
+                shadow-[#D8E0C5]
                 "
                                     >
 
@@ -1405,14 +1405,14 @@ ${product?.desc}
                     px-4
                     py-3
                     text-left
-                    text-[#6B5845]
+                    text-[#5D6A49]
                     transition
                     hover:bg-[#FDBD4]
-                    hover:text-[#713600]
+                    hover:text-[#4F6225]
                     "
                                         >
 
-                                            <FaLink className="text-[#713600]" />
+                                            <FaLink className="text-[#4F6225]" />
 
                                             Copy Link
 
@@ -1432,14 +1432,14 @@ ${product?.desc}
                     px-4
                     py-3
                     text-left
-                    text-[#6B5845]
+                    text-[#5D6A49]
                     transition
                     hover:bg-[#FDBD4]
-                    hover:text-[#713600]
+                    hover:text-[#4F6225]
                     "
                                         >
 
-                                            <FaWhatsapp className="text-[#713600]" />
+                                            <FaWhatsapp className="text-[#4F6225]" />
 
                                             WhatsApp
 
@@ -1459,14 +1459,14 @@ ${product?.desc}
                     px-4
                     py-3
                     text-left
-                    text-[#6B5845]
+                    text-[#5D6A49]
                     transition
                     hover:bg-[#FDBD4]
-                    hover:text-[#713600]
+                    hover:text-[#4F6225]
                     "
                                         >
 
-                                            <FaFacebook className="text-[#C05800]" />
+                                            <FaFacebook className="text-[#667A32]" />
 
                                             Facebook
 
@@ -1486,14 +1486,14 @@ ${product?.desc}
                     px-4
                     py-3
                     text-left
-                    text-[#6B5845]
+                    text-[#5D6A49]
                     transition
                     hover:bg-[#FDBD4]
-                    hover:text-[#713600]
+                    hover:text-[#4F6225]
                     "
                                         >
 
-                                            <FaInstagram className="text-[#C05800]" />
+                                            <FaInstagram className="text-[#667A32]" />
 
                                             Instagram
 
@@ -1516,11 +1516,11 @@ ${product?.desc}
       mt-6
       rounded-[30px]
       border
-      border-[#E8CFA8]
+      border-[#D8E0C5]
       bg-white
       p-6
       shadow-xl
-      shadow-[#E8CFA8]/30
+      shadow-[#D8E0C5]/30
       md:mt-8
       md:p-8
       "
@@ -1531,7 +1531,7 @@ ${product?.desc}
           mb-6
           text-2xl
           font-bold
-          text-[#38240D]
+          text-[#283616]
           "
                                 >
                                     Product Specifications
@@ -1544,16 +1544,16 @@ ${product?.desc}
                                             className="
                     rounded-2xl
                     border
-                    border-[#E8CFA8]
+                    border-[#D8E0C5]
                     bg-gradient-to-br
-                    from-[#FFF9EF]
+                    from-[#F5F7EC]
                     to-white
                     p-4
                     transition-all
                     duration-300
-                    hover:border-[#C05800]
+                    hover:border-[#667A32]
                     hover:shadow-lg
-                    hover:shadow-[#C05800]/10
+                    hover:shadow-[#667A32]/10
                     "
                                         >
                                             <p
@@ -1562,7 +1562,7 @@ ${product?.desc}
                       font-bold
                       uppercase
                       tracking-wider
-                      text-[#C05800]
+                      text-[#667A32]
                       "
                                             >
                                                 {item.label}
@@ -1573,7 +1573,7 @@ ${product?.desc}
                       mt-1.5
                       text-base
                       font-bold
-                      text-[#38240D]
+                      text-[#283616]
                       break-words
                       "
                                             >
@@ -1600,13 +1600,14 @@ ${product?.desc}
                         <div
                             className="
   h-fit
+  lg:-mt-[430px]
   rounded-[32px]
   border
-  border-[#E8CFA8]
+  border-[#D8E0C5]
   bg-white
   p-5
   shadow-xl
-  shadow-[#E8CFA8]
+  shadow-[#D8E0C5]
   lg:sticky
   lg:top-24
   sm:p-6
@@ -1622,12 +1623,12 @@ ${product?.desc}
       rounded-full
       bg-gradient-to-r
       from-[#FDBD4]
-      to-[#F3D8B3]
+      to-[#E1E8D0]
       px-4
       py-2
       text-sm
       font-semibold
-      text-[#713600]
+      text-[#4F6225]
       "
                             >
 
@@ -1642,7 +1643,7 @@ ${product?.desc}
       mt-5
       text-2xl
       font-black
-      text-[#38240D]
+      text-[#283616]
       md:text-3xl
       "
                             >
@@ -1657,7 +1658,7 @@ ${product?.desc}
                                 className="
       mt-3
       leading-7
-      text-[#6B5845]
+      text-[#5D6A49]
       "
                             >
 
@@ -1667,7 +1668,7 @@ ${product?.desc}
                                     className="
           ml-2
           font-semibold
-          text-[#C05800]
+          text-[#667A32]
           "
                                 >
 
@@ -1705,19 +1706,19 @@ ${product?.desc}
           w-full
           rounded-2xl
           border
-          border-[#E8CFA8]
+          border-[#D8E0C5]
           bg-[#FDBD4]
           px-5
           py-4
-          text-[#38240D]
+          text-[#283616]
           outline-none
           transition-all
           duration-300
-          placeholder:text-[#8A735A]
-          focus:border-[#C05800]
+          placeholder:text-[#74805F]
+          focus:border-[#667A32]
           focus:bg-white
           focus:ring-4
-          focus:ring-[#F3D8B3]
+          focus:ring-[#E1E8D0]
           "
                                 />
 
@@ -1740,19 +1741,19 @@ ${product?.desc}
           w-full
           rounded-2xl
           border
-          border-[#E8CFA8]
+          border-[#D8E0C5]
           bg-[#FDBD4]
           px-5
           py-4
-          text-[#38240D]
+          text-[#283616]
           outline-none
           transition-all
           duration-300
-          placeholder:text-[#8A735A]
-          focus:border-[#C05800]
+          placeholder:text-[#74805F]
+          focus:border-[#667A32]
           focus:bg-white
           focus:ring-4
-          focus:ring-[#F3D8B3]
+          focus:ring-[#E1E8D0]
           "
                                 />
 
@@ -1776,19 +1777,19 @@ ${product?.desc}
           w-full
           rounded-2xl
           border
-          border-[#E8CFA8]
+          border-[#D8E0C5]
           bg-[#FDBD4]
           px-5
           py-4
-          text-[#38240D]
+          text-[#283616]
           outline-none
           transition-all
           duration-300
-          placeholder:text-[#8A735A]
-          focus:border-[#C05800]
+          placeholder:text-[#74805F]
+          focus:border-[#667A32]
           focus:bg-white
           focus:ring-4
-          focus:ring-[#F3D8B3]
+          focus:ring-[#E1E8D0]
           "
                                 />
 
@@ -1804,20 +1805,20 @@ ${product?.desc}
           w-full
           rounded-2xl
           bg-gradient-to-r
-          from-[#713600]
-          to-[#C05800]
+          from-[#4F6225]
+          to-[#667A32]
           py-4
           font-semibold
           text-white
           shadow-lg
-          shadow-[#E8CFA8]
+          shadow-[#D8E0C5]
           transition-all
           duration-300
           hover:-translate-y-1
-          hover:from-[#38240D]
-          hover:to-[#713600]
+          hover:from-[#283616]
+          hover:to-[#4F6225]
           hover:shadow-xl
-          hover:shadow-[#C05800]
+          hover:shadow-[#667A32]
           disabled:cursor-not-allowed
           disabled:opacity-70
           "
@@ -1834,7 +1835,7 @@ ${product?.desc}
                         </div>
                         {/* Description */}
 
-                        <div className="rounded-[32px] border border-#E8CFA8 bg-white p-5 shadow-xl shadow-#E8CFA8-100 sm:p-6 md:p-10">
+                        <div className="rounded-[32px] border border-#D8E0C5 bg-white p-5 shadow-xl shadow-#D8E0C5-100 sm:p-6 md:p-10">
 
                             {/* Header */}
 
@@ -1844,12 +1845,12 @@ ${product?.desc}
   rounded-full
   bg-gradient-to-r
   from-[#FDBD4]
-  to-[#F3D8B3]
+  to-[#E1E8D0]
   px-4
   py-2
   text-sm
   font-semibold
-  text-[#713600]
+  text-[#4F6225]
   "
                             >
 
@@ -1863,7 +1864,7 @@ ${product?.desc}
   mt-5
   text-2xl
   font-black
-  text-[#38240D]
+  text-[#283616]
   md:text-3xl
   "
                             >
@@ -1878,7 +1879,7 @@ ${product?.desc}
   mt-6
   text-base
   leading-8
-  text-[#6B5845]
+  text-[#5D6A49]
   md:text-lg
   md:leading-9
   "
@@ -1891,18 +1892,18 @@ ${product?.desc}
                             </p>
                             {/* Specifications Table */}
                             {specificationsList.length > 0 && (
-                                <div className="mt-10 overflow-x-auto rounded-2xl border border-[#E8D3BC]">
+                                <div className="mt-10 overflow-x-auto rounded-2xl border border-[#D6DEC0]">
                                     <table className="w-full border-collapse">
                                         <tbody>
                                             {specificationsList.map((item, index) => (
                                                 <tr
                                                     key={index}
-                                                    className="border-b border-[#E8D3BC]/60 last:border-b-0 transition hover:bg-[#FFF9EF]"
+                                                    className="border-b border-[#D6DEC0]/60 last:border-b-0 transition hover:bg-[#F5F7EC]"
                                                 >
-                                                    <td className="w-1/3 bg-[#FFF9EF]/80 px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-[#C05800]">
+                                                    <td className="w-1/3 bg-[#F5F7EC]/80 px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-[#667A32]">
                                                         {item.label}
                                                     </td>
-                                                    <td className="px-5 py-3.5 text-sm font-semibold text-[#38240D]">
+                                                    <td className="px-5 py-3.5 text-sm font-semibold text-[#283616]">
                                                         {item.value}
                                                     </td>
                                                 </tr>
@@ -1920,11 +1921,11 @@ ${product?.desc}
   mt-12
   rounded-[32px]
   border
-  border-[#E8CFA8]
+  border-[#D8E0C5]
   bg-white
   p-6
   shadow-xl
-  shadow-[#E8CFA8]
+  shadow-[#D8E0C5]
   md:p-10
   "
                             >
@@ -1935,12 +1936,12 @@ ${product?.desc}
       rounded-full
       bg-gradient-to-r
       from-[#FDBD4]
-      to-[#F3D8B3]
+      to-[#E1E8D0]
       px-4
       py-2
       text-sm
       font-semibold
-      text-[#713600]
+      text-[#4F6225]
       "
                                 >
 
@@ -1993,16 +1994,16 @@ ${product?.desc}
                                             className="
                 rounded-2xl
                 border
-                border-[#E8CFA8]
+                border-[#D8E0C5]
                 bg-gradient-to-br
                 from-[#FDBD4]
                 to-white
                 p-6
                 transition-all
                 duration-300
-                hover:border-[#C05800]
+                hover:border-[#667A32]
                 hover:shadow-lg
-                hover:shadow-[#E8CFA8]
+                hover:shadow-[#D8E0C5]
                 "
                                         >
 
@@ -2011,7 +2012,7 @@ ${product?.desc}
                                                 className="
                   text-2xl
                   font-bold
-                  text-[#38240D]
+                  text-[#283616]
                   "
                                             >
 
@@ -2025,7 +2026,7 @@ ${product?.desc}
                                                 className="
                   mt-4
                   leading-8
-                  text-[#6B5845]
+                  text-[#5D6A49]
                   "
                                             >
 
@@ -2052,11 +2053,11 @@ ${product?.desc}
   mt-12
   rounded-[32px]
   border
-  border-[#E8CFA8]
+  border-[#D8E0C5]
   bg-white
   p-6
   shadow-xl
-  shadow-[#E8CFA8]
+  shadow-[#D8E0C5]
   md:p-10
   "
                             >
@@ -2067,12 +2068,12 @@ ${product?.desc}
       rounded-full
       bg-gradient-to-r
       from-[#FDBD4]
-      to-[#F3D8B3]
+      to-[#E1E8D0]
       px-4
       py-2
       text-sm
       font-semibold
-      text-[#713600]
+      text-[#4F6225]
       "
                                 >
 
@@ -2088,7 +2089,7 @@ ${product?.desc}
       text-2xl
       md:text-3xl
       font-black
-      text-[#38240D]
+      text-[#283616]
       "
                                 >
 
@@ -2145,7 +2146,7 @@ ${product?.desc}
                                             className="
                 rounded-2xl
                 border
-                border-[#E8CFA8]
+                border-[#D8E0C5]
                 bg-gradient-to-br
                 from-[#FDBD4]
                 to-white
@@ -2153,9 +2154,9 @@ ${product?.desc}
                 transition-all
                 duration-300
                 hover:-translate-y-1
-                hover:border-[#C05800]
+                hover:border-[#667A32]
                 hover:shadow-lg
-                hover:shadow-[#E8CFA8]
+                hover:shadow-[#D8E0C5]
                 "
                                         >
 
@@ -2164,7 +2165,7 @@ ${product?.desc}
                                                 className="
                   text-lg
                   font-bold
-                  text-[#38240D]
+                  text-[#283616]
                   "
                                             >
 
@@ -2178,7 +2179,7 @@ ${product?.desc}
                                                 className="
                   mt-3
                   leading-8
-                  text-[#6B5845]
+                  text-[#5D6A49]
                   "
                                             >
 

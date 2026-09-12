@@ -58,7 +58,7 @@ export default function ContactPage() {
     const loadContact = async () => {
       try {
         const snap = await getDoc(
-          doc(db, "websites", "clinidixcom", "pages", "contact")
+          doc(db, "websites", "cliakitsin", "pages", "contact")
         );
         if (snap.exists()) {
           setContactInfo(snap.data().contactInfo || []);
@@ -78,7 +78,7 @@ export default function ContactPage() {
       if (!currentDistrict) return;
       try {
         const snap = await getDoc(
-          doc(db, "websites", "clinidixcom", "districts", currentDistrict)
+          doc(db, "websites", "cliakitsin", "districts", currentDistrict)
         );
         if (snap.exists()) {
           setDistrictData(snap.data());
@@ -124,7 +124,7 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="bg-[#FFF9EF]/40 text-[#38240D]">
+    <div className="bg-[#F5F7EC]/40 text-[#283616]">
       {/* Banner */}
       <PageBanner
         badge="Get in Touch"
@@ -133,7 +133,7 @@ export default function ContactPage() {
       />
 
       {/* Main Grid */}
-      <section className="section-padding bg-gradient-to-b from-white via-[#FFF9EF] to-[#FDFBD4]">
+      <section className="section-padding bg-gradient-to-b from-white via-[#F5F7EC] to-[#EAF0D6]">
         <div className="container-custom">
           <div className="grid lg:grid-cols-12 gap-12 items-start">
             {/* Left Contact Cards - 100% Dynamic from Firestore */}
@@ -150,13 +150,13 @@ export default function ContactPage() {
                     {[...Array(3)].map((_, i) => (
                       <div
                         key={i}
-                        className="h-28 rounded-3xl bg-[#F3E4D2]/60 animate-pulse"
+                        className="h-28 rounded-3xl bg-[#DEE6CC]/60 animate-pulse"
                       />
                     ))}
                   </div>
                 ) : contactInfo.length === 0 ? (
-                  <div className="rounded-3xl border border-[#E8D3BC] bg-white p-8 text-center text-[#5B4634]">
-                    <Info size={32} className="mx-auto text-[#C05800] mb-2" />
+                  <div className="rounded-3xl border border-[#D6DEC0] bg-white p-8 text-center text-[#4C5B38]">
+                    <Info size={32} className="mx-auto text-[#667A32] mb-2" />
                     <p className="font-semibold">No Contact Information Added</p>
                     <p className="text-xs mt-1">Please add contact details from the Admin panel.</p>
                   </div>
@@ -200,13 +200,13 @@ export default function ContactPage() {
                     return (
                       <div
                         key={idx}
-                        className="flex items-start gap-4 rounded-3xl border border-[#E8D3BC] bg-white p-6 shadow-sm transition-all hover:border-[#C05800]/40 hover:shadow-md"
+                        className="flex items-start gap-4 rounded-3xl border border-[#D6DEC0] bg-white p-6 shadow-sm transition-all hover:border-[#667A32]/40 hover:shadow-md"
                       >
-                        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#F3E4D2] text-[#C05800] shrink-0">
+                        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#DEE6CC] text-[#667A32] shrink-0">
                           {getFieldIcon(label)}
                         </div>
                         <div className="flex-1">
-                          <h4 className="text-xs font-bold uppercase tracking-wider text-[#5B4634]">
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-[#4C5B38]">
                             {label}
                           </h4>
                           <div className="mt-2 flex flex-col gap-1.5">
@@ -216,7 +216,7 @@ export default function ContactPage() {
                                   <a
                                     key={vIdx}
                                     href={`tel:${String(val).replace(/\s+/g, "")}`}
-                                    className="text-base sm:text-lg font-bold text-[#38240D] hover:text-[#C05800] transition-colors inline-block"
+                                    className="text-base sm:text-lg font-bold text-[#283616] hover:text-[#667A32] transition-colors inline-block"
                                   >
                                     {val}
                                   </a>
@@ -227,7 +227,7 @@ export default function ContactPage() {
                                   <a
                                     key={vIdx}
                                     href={`mailto:${val}`}
-                                    className="text-base font-bold text-[#38240D] hover:text-[#C05800] transition-colors inline-block break-all"
+                                    className="text-base font-bold text-[#283616] hover:text-[#667A32] transition-colors inline-block break-all"
                                   >
                                     {val}
                                   </a>
@@ -236,7 +236,7 @@ export default function ContactPage() {
                               return (
                                 <p
                                   key={vIdx}
-                                  className="text-sm sm:text-base font-bold text-[#38240D] leading-relaxed"
+                                  className="text-sm sm:text-base font-bold text-[#283616] leading-relaxed"
                                 >
                                   {val}
                                 </p>
@@ -263,7 +263,7 @@ export default function ContactPage() {
       </section>
 
       {/* FAQ Section */}
-      <section className="section-padding bg-white border-t border-[#E8D3BC]/60">
+      <section className="section-padding bg-white border-t border-[#D6DEC0]/60">
         <div className="container-custom max-w-4xl">
           <SectionTitle
             badge="Frequently Asked Questions"
@@ -278,23 +278,22 @@ export default function ContactPage() {
               return (
                 <div
                   key={idx}
-                  className="rounded-3xl border border-[#E8D3BC] bg-[#FFF9EF]/60 overflow-hidden transition-all"
+                  className="rounded-3xl border border-[#D6DEC0] bg-[#F5F7EC]/60 overflow-hidden transition-all"
                 >
                   <button
                     onClick={() => setOpenFaq(isOpen ? null : idx)}
-                    className="w-full flex items-center justify-between p-6 text-left font-bold text-[#38240D] hover:text-[#C05800]"
+                    className="w-full flex items-center justify-between p-6 text-left font-bold text-[#283616] hover:text-[#667A32]"
                   >
                     <span className="text-base sm:text-lg pr-4">{faq.q}</span>
                     <ChevronDown
                       size={20}
-                      className={`shrink-0 text-[#C05800] transition-transform duration-300 ${
-                        isOpen ? "rotate-180" : ""
-                      }`}
+                      className={`shrink-0 text-[#667A32] transition-transform duration-300 ${isOpen ? "rotate-180" : ""
+                        }`}
                     />
                   </button>
 
                   {isOpen && (
-                    <div className="px-6 pb-6 text-sm sm:text-base leading-relaxed text-[#5B4634] border-t border-[#E8D3BC]/40 pt-4">
+                    <div className="px-6 pb-6 text-sm sm:text-base leading-relaxed text-[#4C5B38] border-t border-[#D6DEC0]/40 pt-4">
                       {faq.a}
                     </div>
                   )}

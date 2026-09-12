@@ -16,28 +16,29 @@ import {
   Film,
 } from "lucide-react";
 
-// Default high-quality fallback slides if database has no media configured yet
+/*
+ * BENTO CAROUSEL
+ *
+ * IMPORTANT:
+ * - Images have static fallbacks so the carousel always has media.
+ * - Title, description and both button labels are DYNAMIC ONLY.
+ * - No static fallback copy is used for those fields.
+ */
 const FALLBACK_SLIDES = [
   {
+    id: "fallback-1",
     type: "image",
-    url: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=1900&q=80",
-    title: "Precision Medical Equipment & Diagnostic Solutions",
-    subtitle:
-      "Equipping hospitals, pathology centers, and clinical laboratories with top-tier automated analyzers, NABL-traceable calibration, and 24/7 rapid technical engineering support across India.",
+    url: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=1900&q=85",
   },
   {
+    id: "fallback-2",
     type: "image",
-    url: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1900&q=80",
-    title: "Automated Clinical Chemistry & Pathology Analyzers",
-    subtitle:
-      "High-throughput diagnostic instruments delivering rapid test results with uncompromised quality control and ISO 13485 certified accuracy standards.",
+    url: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1900&q=85",
   },
   {
+    id: "fallback-3",
     type: "image",
-    url: "https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=1900&q=80",
-    title: "24/7 Biomedical Engineering & AMC Support",
-    subtitle:
-      "Guaranteed 2-hour emergency repair SLA for critical ICU, OT, and pathology laboratory equipment with genuine OEM parts.",
+    url: "https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=1900&q=85",
   },
 ];
 
@@ -52,18 +53,20 @@ export default function HeroCarousel({
   const [touchEnd, setTouchEnd] = useState(null);
   const videoRefs = useRef({});
 
-  // Parse media items from Firestore home data
   const parseMediaList = (data) => {
     if (!data) return [];
+
     const list = [];
 
-    // 1. Check media array (preferred)
     if (Array.isArray(data.media) && data.media.length > 0) {
       data.media.forEach((item, idx) => {
         const url = typeof item === "string" ? item : item?.url;
         const type =
           item?.type ||
-          (url?.match(/\.(mp4|webm|ogg|mov)(\?.*)?$/i) ? "video" : "image");
+          (url?.match(/\.(mp4|webm|ogg|mov)(\?.*)?$/i)
+            ? "video"
+            : "image");
+
         if (url) {
           list.push({
             id: `media-${idx}`,
@@ -74,8 +77,11 @@ export default function HeroCarousel({
       });
     }
 
-    // 2. Check images array
-    if (list.length === 0 && Array.isArray(data.images) && data.images.length > 0) {
+    if (
+      list.length === 0 &&
+      Array.isArray(data.images) &&
+      data.images.length > 0
+    ) {
       data.images.forEach((url, idx) => {
         if (url) {
           list.push({
@@ -87,9 +93,9 @@ export default function HeroCarousel({
       });
     }
 
-    // 3. Check single imageUrl / image
     if (list.length === 0 && (data.imageUrl || data.image)) {
       const singleImg = data.imageUrl || data.image;
+
       if (singleImg) {
         list.push({
           id: "single-img",
@@ -99,7 +105,6 @@ export default function HeroCarousel({
       }
     }
 
-    // 4. Check videos array
     if (Array.isArray(data.videos) && data.videos.length > 0) {
       data.videos.forEach((vUrl, idx) => {
         if (vUrl && !list.some((item) => item.url === vUrl)) {
@@ -112,7 +117,6 @@ export default function HeroCarousel({
       });
     }
 
-    // 5. Check single videoUrl
     if (data.videoUrl && !list.some((item) => item.url === data.videoUrl)) {
       list.push({
         id: "single-vid",
@@ -127,25 +131,15 @@ export default function HeroCarousel({
   const dbSlides = parseMediaList(homeData);
   const slides = dbSlides.length > 0 ? dbSlides : FALLBACK_SLIDES;
 
-  // Dynamic texts with fallbacks
-  const heroTitle =
-    homeData?.title?.trim() ||
-    (locationTitle
-      ? `Precision Medical Equipment & Diagnostic Solutions in ${locationTitle}`
-      : "Precision Medical Equipment & Diagnostic Solutions");
+  // DYNAMIC ONLY — no static title/description/button fallbacks.
+  const heroTitle = homeData?.title?.trim() || "";
+  const heroDescription = homeData?.description?.trim() || "";
+  const btn1Text = homeData?.button1Text?.trim() || "";
+  const btn2Text = homeData?.button2Text?.trim() || "";
 
-  const heroDescription =
-    homeData?.description?.trim() ||
-    "Equipping hospitals, pathology centers, and clinical laboratories with top-tier automated analyzers, NABL-traceable calibration, and 24/7 rapid technical engineering support across India.";
-
-  const btn1Text = homeData?.button1Text?.trim() || "Explore Product Catalog";
-  const btn2Text = homeData?.button2Text?.trim() || "Request Official Quote";
-
-  // Static routes for buttons
   const btn1Href = makeLink("/items");
   const btn2Href = makeLink("/contact");
 
-  // Auto-slide effect
   useEffect(() => {
     if (!isPlaying || slides.length <= 1) return;
 
@@ -154,23 +148,23 @@ export default function HeroCarousel({
     }, 5500);
 
     return () => clearInterval(timer);
-  }, [isPlaying, slides.length, currentSlide]);
+  }, [isPlaying, slides.length]);
 
-  // Adjust active slide index safely if slides array length changes
   useEffect(() => {
     if (currentSlide >= slides.length && slides.length > 0) {
       setCurrentSlide(slides.length - 1);
     }
   }, [slides.length, currentSlide]);
 
-  // Play video on current slide
   useEffect(() => {
     const currentMedia = slides[currentSlide];
+
     if (currentMedia?.type === "video") {
       const vid = videoRefs.current[currentSlide];
+
       if (vid) {
         vid.currentTime = 0;
-        vid.play().catch(() => {});
+        vid.play().catch(() => { });
       }
     }
   }, [currentSlide, slides]);
@@ -183,7 +177,6 @@ export default function HeroCarousel({
     setCurrentSlide((prev) => (prev + 1) % slides.length);
   };
 
-  // Touch swipe support for mobile
   const minSwipeDistance = 50;
 
   const onTouchStart = (e) => {
@@ -197,217 +190,265 @@ export default function HeroCarousel({
 
   const onTouchEnd = () => {
     if (!touchStart || !touchEnd) return;
-    const distance = touchStart - touchEnd;
-    const isLeftSwipe = distance > minSwipeDistance;
-    const isRightSwipe = distance < -minSwipeDistance;
 
-    if (isLeftSwipe) {
+    const distance = touchStart - touchEnd;
+
+    if (distance > minSwipeDistance) {
       handleNext();
-    } else if (isRightSwipe) {
+    } else if (distance < -minSwipeDistance) {
       handlePrev();
     }
   };
 
-  const activeMedia = slides[currentSlide] || slides[0];
+  const getRelativeIndex = (offset) => {
+    if (!slides.length) return 0;
+    return (currentSlide + offset + slides.length) % slides.length;
+  };
+
+  const renderMedia = (media, index, className, altText) => {
+    if (!media) return null;
+
+    if (media.type === "video") {
+      return (
+        <video
+          ref={(el) => {
+            videoRefs.current[index] = el;
+          }}
+          src={media.url}
+          className={className}
+          autoPlay={index === currentSlide}
+          loop
+          muted
+          playsInline
+          preload="auto"
+        />
+      );
+    }
+
+    return (
+      <img
+        src={media.url}
+        alt={altText}
+        className={className}
+        onError={(e) => {
+          if (e.currentTarget.src !== FALLBACK_SLIDES[0].url) {
+            e.currentTarget.src = FALLBACK_SLIDES[0].url;
+          }
+        }}
+      />
+    );
+  };
+
+  const activeMedia = slides[currentSlide] || FALLBACK_SLIDES[0];
 
   return (
-    <section className="relative overflow-hidden bg-[#1a0f05] text-white">
-      {/* Background Media Viewport with Full Brightness & High Image Visibility */}
+    <section className="relative overflow-hidden bg-[#F5F7EC] text-[#283616]">
       <div
-        className="relative w-full h-[380px] sm:h-[440px] md:h-[490px] lg:h-[530px] overflow-hidden"
+        className="relative w-full min-h-[570px] sm:min-h-[620px] lg:min-h-[680px] overflow-hidden"
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
       >
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentSlide}
-            initial={{ opacity: 0, scale: 1.02 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.6, ease: "easeInOut" }}
-            className="absolute inset-0 w-full h-full"
-          >
-            {activeMedia?.type === "video" ? (
-              <video
-                ref={(el) => (videoRefs.current[currentSlide] = el)}
-                src={activeMedia.url}
-                className="w-full h-full object-cover object-center"
-                autoPlay
-                loop
-                muted
-                playsInline
-                preload="auto"
-              />
-            ) : (
-              <img
-                src={activeMedia?.url}
-                alt={`Hero Slide ${currentSlide + 1}`}
-                className="w-full h-full object-cover object-center brightness-[0.95] contrast-[1.05]"
-                onError={(e) => {
-                  e.target.src = FALLBACK_SLIDES[0].url;
-                }}
-              />
-            )}
-          </motion.div>
-        </AnimatePresence>
+        {/* Soft background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#F5F7EC] via-white to-[#EAF0D6]" />
 
-        {/* Soft, Non-intrusive Gradient only on text side (Leaves image bright and visible) */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/35 to-transparent lg:w-3/5" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20" />
+        <div className="container-custom relative z-10 h-full py-6 sm:py-8 lg:py-10">
+          {/* =====================================================
+              BENTO CAROUSEL
+              Large active image + two stacked preview images
+          ===================================================== */}
+          <div className="grid h-full min-h-[520px] grid-cols-1 gap-4 lg:grid-cols-[1.75fr_0.9fr] lg:min-h-[620px]">
+            {/* LEFT — Large active media */}
+            <div className="relative min-h-[360px] overflow-hidden rounded-[30px] border border-[#D6DEC0] bg-[#283616] shadow-2xl shadow-[#667A32]/15 sm:min-h-[440px] lg:min-h-0">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={`main-${activeMedia?.id}-${currentSlide}`}
+                  initial={{ opacity: 0, scale: 1.035 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.99 }}
+                  transition={{ duration: 0.65, ease: "easeInOut" }}
+                  className="absolute inset-0"
+                >
+                  {renderMedia(
+                    activeMedia,
+                    currentSlide,
+                    "h-full w-full object-cover object-center brightness-[0.86] contrast-[1.04]",
+                    `Biomedical diagnostic slide ${currentSlide + 1}`
+                  )}
+                </motion.div>
+              </AnimatePresence>
 
-        {/* Foreground Content Container */}
-        <div className="container-custom relative z-20 h-full flex flex-col justify-center py-6 sm:py-8">
-          <div className="max-w-2xl lg:max-w-3xl">
-            {/* Top Badge */}
-            <motion.div
-              initial={{ opacity: 0, y: -15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/50 px-3.5 py-1.5 text-[11px] sm:text-xs font-extrabold uppercase tracking-wider text-[#FDFBD4] shadow-lg backdrop-blur-md"
-            >
-              <Sparkles size={14} className="text-[#FBBF24] animate-pulse" />
-              <span>
-                {locationTitle
-                  ? `Leading Biomedical Supplier in ${locationTitle}`
-                  : "Pioneering Biomedical & Diagnostic Innovations"}
-              </span>
-            </motion.div>
+              {/* Readability overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#16200D]/95 via-[#283616]/35 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#16200D]/70 via-transparent to-transparent lg:w-[72%]" />
 
-            {/* Main Heading with crisp drop-shadow */}
-            <motion.h1
-              key={`title-${currentSlide}-${heroTitle}`}
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="mt-3 sm:mt-4 text-2xl font-black tracking-tight text-white sm:text-3xl md:text-4xl lg:text-5xl leading-[1.14] drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]"
-            >
-              {heroTitle}
-            </motion.h1>
+              {/* Dynamic content */}
+              <div className="absolute inset-x-0 bottom-0 z-20 p-5 sm:p-7 md:p-9 lg:p-10">
+                <motion.div
+                  key={`copy-${currentSlide}-${heroTitle}`}
+                  initial={{ opacity: 0, y: 18 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className="max-w-3xl"
+                >
+                  {heroTitle && (
+                    <h1 className="max-w-3xl text-3xl font-black leading-[1.08] tracking-tight !text-white drop-shadow-[0_3px_12px_rgba(0,0,0,0.9)] sm:text-4xl md:text-5xl lg:text-6xl">
+                      {heroTitle}
+                    </h1>
+                  )}
 
-            {/* Description with crisp drop-shadow */}
-            <motion.p
-              key={`desc-${currentSlide}-${heroDescription}`}
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="mt-2.5 sm:mt-3 text-xs sm:text-sm md:text-base leading-relaxed text-[#FDFBD4] max-w-2xl font-medium line-clamp-3 md:line-clamp-none drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)]"
-            >
-              {heroDescription}
-            </motion.p>
+                  {heroDescription && (
+                    <p className="mt-4 max-w-2xl text-sm font-medium leading-7 !text-white/95 drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] sm:text-base md:text-lg">
+                      {heroDescription}
+                    </p>
+                  )}
 
-            {/* Action Buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="mt-5 sm:mt-6 flex flex-wrap items-center gap-3"
-            >
-              <Link
-                href={btn1Href}
-                className="flex items-center justify-center gap-2 rounded-xl bg-[#C05800] !text-white px-6 py-3 text-xs sm:text-sm font-bold shadow-xl shadow-[#C05800]/40 transition-all duration-300 hover:bg-[#E06D00] hover:shadow-2xl hover:-translate-y-0.5 border border-amber-400/20"
-              >
-                <span className="!text-white font-bold">{btn1Text}</span>
-                <ArrowRight size={16} className="!text-white" />
-              </Link>
+                  {(btn1Text || btn2Text) && (
+                    <div className="mt-6 flex flex-wrap gap-3">
+                      {btn1Text && (
+                        <Link
+                          href={btn1Href}
+                          className="group inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-[#8DA64A]/50 bg-[#667A32] px-5 py-3 text-sm font-extrabold !text-white shadow-xl shadow-black/20 transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#4F6225] hover:shadow-2xl"
+                        >
+                          <span className="!text-white">{btn1Text}</span>
+                          <ArrowRight
+                            size={17}
+                            className="!text-white transition-transform duration-300 group-hover:translate-x-1"
+                          />
+                        </Link>
+                      )}
 
-              <Link
-                href={btn2Href}
-                className="flex items-center justify-center gap-2 rounded-xl border border-white/50 bg-black/60 !text-white px-6 py-3 text-xs sm:text-sm font-bold backdrop-blur-md shadow-md transition-all duration-300 hover:bg-white hover:!text-[#38240D] hover:border-white hover:-translate-y-0.5"
-              >
-                <PhoneCall size={16} className="text-[#FBBF24]" />
-                <span className="font-bold">{btn2Text}</span>
-              </Link>
-            </motion.div>
-
-            {/* Trust Badges */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className="mt-5 hidden sm:flex flex-wrap items-center gap-5 border-t border-white/20 pt-4 text-xs font-semibold text-[#FDFBD4] drop-shadow-[0_1px_4px_rgba(0,0,0,0.7)]"
-            >
-              <div className="flex items-center gap-1.5">
-                <CheckCircle2 size={16} className="text-[#FBBF24] shrink-0" />
-                <span>ISO 13485 Certified</span>
+                      {btn2Text && (
+                        <Link
+                          href={btn2Href}
+                          className="group inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-white/35 bg-[#16200D]/65 px-5 py-3 text-sm font-extrabold !text-white backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-white hover:!text-[#283616]"
+                        >
+                          <PhoneCall
+                            size={17}
+                            className="text-[#B7CC73] transition-colors duration-300 group-hover:text-[#667A32]"
+                          />
+                          <span>{btn2Text}</span>
+                        </Link>
+                      )}
+                    </div>
+                  )}
+                </motion.div>
               </div>
-              <div className="flex items-center gap-1.5">
-                <CheckCircle2 size={16} className="text-[#FBBF24] shrink-0" />
-                <span>24/7 SLA Field Support</span>
+
+              {/* Main slide type badge */}
+              <div className="absolute left-4 top-4 z-20 flex items-center gap-2 rounded-full border border-white/25 bg-[#16200D]/70 px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.12em] !text-white backdrop-blur-md sm:left-6 sm:top-6">
+                {activeMedia?.type === "video" ? (
+                  <Film size={13} className="text-[#B7CC73]" />
+                ) : (
+                  <ImageIcon size={13} className="text-[#B7CC73]" />
+                )}
+                <span>
+                  {String(currentSlide + 1).padStart(2, "0")} /{" "}
+                  {String(slides.length).padStart(2, "0")}
+                </span>
               </div>
-              <div className="flex items-center gap-1.5">
-                <CheckCircle2 size={16} className="text-[#FBBF24] shrink-0" />
-                <span>NABL Traceable QC</span>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-
-        {/* Carousel Floating Controls Bar */}
-        {slides.length > 1 && (
-          <div className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 z-30 flex items-center gap-2 sm:gap-3">
-            {/* Auto-play toggle */}
-            <button
-              type="button"
-              onClick={() => setIsPlaying(!isPlaying)}
-              title={isPlaying ? "Pause Slideshow" : "Play Slideshow"}
-              className="hidden sm:flex h-9 w-9 items-center justify-center rounded-xl bg-black/60 text-white backdrop-blur-md border border-white/30 hover:bg-black/85 transition-all shadow-md"
-            >
-              {isPlaying ? <Pause size={14} /> : <Play size={14} />}
-            </button>
-
-            {/* Prev Button */}
-            <button
-              type="button"
-              onClick={handlePrev}
-              title="Previous Slide"
-              className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl sm:rounded-2xl bg-black/60 text-white backdrop-blur-md border border-white/30 hover:bg-[#C05800] hover:border-[#C05800] transition-all shadow-md"
-            >
-              <ChevronLeft size={18} />
-            </button>
-
-            {/* Counter Badge */}
-            <div className="flex items-center gap-1.5 rounded-xl bg-black/70 px-2.5 sm:px-3 py-1.5 text-[11px] sm:text-xs font-bold text-[#FDFBD4] backdrop-blur-md border border-white/30 shadow-md">
-              {activeMedia?.type === "video" ? (
-                <Film size={12} className="text-[#FBBF24]" />
-              ) : (
-                <ImageIcon size={12} className="text-[#FBBF24]" />
-              )}
-              <span>
-                {currentSlide + 1} / {slides.length}
-              </span>
             </div>
 
-            {/* Next Button */}
-            <button
-              type="button"
-              onClick={handleNext}
-              title="Next Slide"
-              className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl sm:rounded-2xl bg-black/60 text-white backdrop-blur-md border border-white/30 hover:bg-[#C05800] hover:border-[#C05800] transition-all shadow-md"
-            >
-              <ChevronRight size={18} />
-            </button>
-          </div>
-        )}
+            {/* RIGHT — Bento preview tiles */}
+            <div className="grid min-h-[280px] grid-cols-2 gap-4 lg:grid-cols-1 lg:grid-rows-2">
+              {[1, 2].map((offset) => {
+                const previewIndex = getRelativeIndex(offset);
+                const preview = slides[previewIndex];
 
-        {/* Bottom Pagination Dots */}
-        {slides.length > 1 && (
-          <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 z-30 flex items-center gap-1.5 sm:gap-2">
-            {slides.map((_, idx) => (
-              <button
-                key={idx}
-                type="button"
-                onClick={() => setCurrentSlide(idx)}
-                aria-label={`Go to slide ${idx + 1}`}
-                className={`transition-all duration-300 rounded-full h-2 sm:h-2.5 ${
-                  currentSlide === idx
-                    ? "w-6 sm:w-8 bg-[#FBBF24] shadow-md shadow-[#FBBF24]/60"
-                    : "w-2 sm:w-2.5 bg-white/60 hover:bg-white"
-                }`}
-              />
-            ))}
+                return (
+                  <button
+                    key={`${preview?.id || previewIndex}-${offset}`}
+                    type="button"
+                    onClick={() => setCurrentSlide(previewIndex)}
+                    aria-label={`Open slide ${previewIndex + 1}`}
+                    className="group relative min-h-[180px] overflow-hidden rounded-[26px] border border-[#D6DEC0] bg-[#283616] text-left shadow-xl shadow-[#667A32]/10 transition-all duration-300 hover:-translate-y-1 hover:border-[#667A32]/60 hover:shadow-2xl hover:shadow-[#667A32]/20 lg:min-h-0"
+                  >
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={`preview-${preview?.id}-${previewIndex}`}
+                        initial={{ opacity: 0.5, scale: 1.04 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.45 }}
+                        className="absolute inset-0"
+                      >
+                        {renderMedia(
+                          preview,
+                          previewIndex,
+                          "h-full w-full object-cover object-center brightness-[0.78] transition-transform duration-500 group-hover:scale-105",
+                          `Biomedical preview slide ${previewIndex + 1}`
+                        )}
+                      </motion.div>
+                    </AnimatePresence>
+
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#16200D]/85 via-transparent to-transparent" />
+
+                    <div className="absolute inset-x-0 bottom-0 z-10 flex items-center justify-between p-4 sm:p-5">
+                      <span className="rounded-full border border-white/20 bg-[#16200D]/65 px-3 py-1 text-[10px] font-bold uppercase tracking-wider !text-white backdrop-blur-md">
+                        Slide {String(previewIndex + 1).padStart(2, "0")}
+                      </span>
+
+                      <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#667A32] !text-white shadow-lg transition-transform duration-300 group-hover:translate-x-0.5">
+                        <ArrowRight size={16} className="!text-white" />
+                      </span>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
           </div>
-        )}
+
+          {/* =====================================================
+              FLOATING CONTROLS
+          ===================================================== */}
+          {slides.length > 1 && (
+            <div className="absolute bottom-7 left-1/2 z-30 flex -translate-x-1/2 items-center gap-1.5 rounded-2xl border border-[#D6DEC0] bg-white/90 p-1.5 shadow-2xl backdrop-blur-xl">
+              <button
+                type="button"
+                onClick={() => setIsPlaying((value) => !value)}
+                aria-label={isPlaying ? "Pause slideshow" : "Play slideshow"}
+                title={isPlaying ? "Pause Slideshow" : "Play Slideshow"}
+                className="flex h-10 w-10 items-center justify-center rounded-xl !text-[#283616] transition-all hover:bg-[#667A32] hover:!text-white"
+              >
+                {isPlaying ? <Pause size={15} /> : <Play size={15} />}
+              </button>
+
+              <button
+                type="button"
+                onClick={handlePrev}
+                aria-label="Previous slide"
+                title="Previous Slide"
+                className="flex h-10 w-10 items-center justify-center rounded-xl !text-[#283616] transition-all hover:bg-[#667A32] hover:!text-white"
+              >
+                <ChevronLeft size={19} />
+              </button>
+
+              <div className="flex items-center gap-1 px-2">
+                {slides.map((slide, idx) => (
+                  <button
+                    key={slide.id || idx}
+                    type="button"
+                    onClick={() => setCurrentSlide(idx)}
+                    aria-label={`Go to slide ${idx + 1}`}
+                    className={`h-2 rounded-full transition-all duration-300 ${currentSlide === idx
+                      ? "w-8 bg-[#667A32]"
+                      : "w-2 bg-[#A7B68A] hover:bg-[#667A32]"
+                      }`}
+                  />
+                ))}
+              </div>
+
+              <button
+                type="button"
+                onClick={handleNext}
+                aria-label="Next slide"
+                title="Next Slide"
+                className="flex h-10 w-10 items-center justify-center rounded-xl !text-[#283616] transition-all hover:bg-[#667A32] hover:!text-white"
+              >
+                <ChevronRight size={19} />
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </section>
   );
