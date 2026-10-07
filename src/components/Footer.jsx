@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { doc, getDoc } from "@/lib/client-api";
+import { db } from "@/lib/client-api";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -49,22 +49,22 @@ export default function Footer() {
 
     const loadData = async () => {
       try {
-        // 1. Fetch Contact Info
-        try {
-          const snap = await getDoc(
-            doc(db, "websites", "cliakitsin", "pages", "contact")
-          );
-          if (isMounted && snap.exists()) {
+        const [snap, prods] = await Promise.all([
+          getDoc(doc(db, "websites", "cliakitsin", "pages", "contact")).catch((err) => {
+            console.error("Error loading footer contact:", err);
+            return null;
+          }),
+          fetchAllDynamicProducts().catch((err) => {
+            console.error("Error loading footer categories:", err);
+            return [];
+          }),
+        ]);
+
+        if (isMounted) {
+          if (snap && snap.exists && snap.exists()) {
             setContactInfo(snap.data().contactInfo || []);
           }
-        } catch (contactErr) {
-          console.error("Error loading footer contact:", contactErr);
-        }
-
-        // 2. Fetch Dynamic Product Categories
-        try {
-          const prods = await fetchAllDynamicProducts();
-          if (isMounted && Array.isArray(prods) && prods.length > 0) {
+          if (Array.isArray(prods) && prods.length > 0) {
             const catSet = new Set();
             prods.forEach((p) => {
               if (p.category && String(p.category).trim() && String(p.category).trim() !== "All Categories") {
@@ -73,8 +73,6 @@ export default function Footer() {
             });
             setCategories(Array.from(catSet));
           }
-        } catch (prodErr) {
-          console.error("Error loading footer categories:", prodErr);
         }
       } finally {
         if (isMounted) setLoading(false);
@@ -159,17 +157,11 @@ export default function Footer() {
     ? `${districtData.district}, ${districtData.state}, India`
     : rawAddress;
 
-  // Fallback list of top categories if database has none yet
+  // Pure dynamic categories — no static category fallbacks
   const displayCategories = useMemo(() => {
-    if (categories.length > 0) return categories.slice(0, 6);
-    return [
-      "Diagnostic Analyzers",
-      "Molecular Diagnostics",
-      "Hospital & ICU Gear",
-      "Laboratory Equipment",
-      "Reagents & Consumables",
-    ];
+    return categories.slice(0, 6);
   }, [categories]);
+
 
   if (loading) {
     return (

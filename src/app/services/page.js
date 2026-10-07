@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { doc, getDoc } from "@/lib/client-api";
+import { db } from "@/lib/client-api";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import PageBanner from "@/components/PageBanner";
@@ -21,6 +21,7 @@ import {
   FileCheck,
   Cpu,
 } from "lucide-react";
+import { WEBSITE_ID } from "@/lib/catalog-utils";
 
 const workflowSteps = [
   {
@@ -49,35 +50,9 @@ const workflowSteps = [
   },
 ];
 
-// Admin Services saves services as:
-// websites/{website}/pages/services
-//
-// Example:
-// globalhealthcart.com -> globalhealthcartcom
-// clinidix.com         -> clinidixcom
-//
-// On localhost we use globalhealthcartcom because that is the
-// website document used by the Global Health Cart project.
-const getWebsiteId = () => {
-  if (typeof window === "undefined") {
-    return "globalhealthcartcom";
-  }
-
-  const hostname = window.location.hostname
-    .toLowerCase()
-    .replace(/^www\./, "");
-
-  if (
-    hostname === "localhost" ||
-    hostname === "127.0.0.1"
-  ) {
-    return "globalhealthcartcom";
-  }
-
-  return hostname.replace(/[^a-z0-9]/g, "");
-};
-
 export default function ServicesPage() {
+
+
   // IMPORTANT:
   // Services are loaded ONLY from Admin/Firebase.
   // There is NO fallbackServices state and NO static service fallback.
@@ -127,7 +102,7 @@ export default function ServicesPage() {
       setLoading(true);
 
       try {
-        const websiteId = getWebsiteId();
+        const websiteId = WEBSITE_ID;
 
         const [servicesSnap, contactSnap] = await Promise.all([
           getDoc(
@@ -139,6 +114,7 @@ export default function ServicesPage() {
               "services"
             )
           ),
+
           getDoc(
             doc(
               db,

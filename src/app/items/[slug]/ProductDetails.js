@@ -4,8 +4,9 @@ import { useEffect, useState, useRef, useMemo } from "react";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import { usePathname } from "next/navigation";
-import { fallbackProducts, makeSlug } from "@/data/productsData";
+import { makeSlug } from "@/data/productsData";
 import { fetchAllDynamicProducts } from "@/lib/fetchProducts";
+
 
 import {
     FaPlay,
@@ -21,8 +22,8 @@ import {
     getDoc,
     addDoc,
     collection,
-} from "firebase/firestore";
-import { db } from "@/lib/firebase";
+} from "@/lib/client-api";
+import { db } from "@/lib/client-api";
 
 const loadImageBase64 = async (src) => {
     try {
@@ -309,22 +310,21 @@ export default function ProductDetails({ slug }) {
                     (p) => p.slug === slug || makeSlug(p.title) === slug || p.id === slug
                 );
 
-                // Fallback search in fallbackProducts
-                if (!found) {
-                    found = fallbackProducts.find(
-                        (p) => p.slug === slug || makeSlug(p.title) === slug || p.id === slug
-                    );
-                }
-
-                // Ultimate fallback so PDP never breaks
-                if (!found && fallbackProducts.length > 0) {
+                if (!found && slug) {
                     const prettyTitle = slug
-                        ? slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
-                        : "Biomedical Equipment";
+                        .replace(/-/g, " ")
+                        .replace(/\b\w/g, (c) => c.toUpperCase());
                     found = {
-                        ...fallbackProducts[0],
+                        id: slug,
                         title: prettyTitle,
-                        slug: slug || "biomedical-equipment",
+                        slug: slug,
+                        description: `Certified ${prettyTitle} supplied by Raj Biosis Private Limited. Contact our team for technical specifications, quotation, and NABL calibration standards.`,
+                        category: "Diagnostic Equipment",
+                        image: "/logo.png",
+                        images: ["/logo.png"],
+                        features: ["Precision calibrated", "NABL & ISO compliant", "24/7 technical support SLA"],
+                        badge: "Certified Instrument",
+                        status: "In Stock",
                     };
                 }
 
@@ -341,29 +341,25 @@ export default function ProductDetails({ slug }) {
                     setSelectedMedia("image");
                 }
             } catch (error) {
-                console.error("Error loading product from Firestore, using fallback:", error);
-                let found = fallbackProducts.find(
-                    (p) => p.slug === slug || makeSlug(p.title) === slug || p.id === slug
-                );
-                if (!found && fallbackProducts.length > 0) {
+                console.error("Error loading product from dynamic catalog:", error);
+                if (slug) {
                     const prettyTitle = slug
-                        ? slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
-                        : "Biomedical Equipment";
-                    found = {
-                        ...fallbackProducts[0],
+                        .replace(/-/g, " ")
+                        .replace(/\b\w/g, (c) => c.toUpperCase());
+                    const fallbackItem = {
+                        id: slug,
                         title: prettyTitle,
-                        slug: slug || "biomedical-equipment",
+                        slug: slug,
+                        description: `Certified ${prettyTitle} supplied by Raj Biosis Private Limited. Contact our team for technical specifications, quotation, and NABL calibration standards.`,
+                        category: "Diagnostic Equipment",
+                        image: "/logo.png",
+                        images: ["/logo.png"],
+                        features: ["Precision calibrated", "NABL & ISO compliant", "24/7 technical support SLA"],
+                        badge: "Certified Instrument",
+                        status: "In Stock",
                     };
-                }
-                setProduct(found);
-                if (found) {
-                    const mainImg =
-                        (Array.isArray(found.images) && found.images[0]) ||
-                        found.image ||
-                        found.imgUrl ||
-                        found.imageUrl ||
-                        "/logo.png";
-                    setSelectedImage(mainImg);
+                    setProduct(fallbackItem);
+                    setSelectedImage("/logo.png");
                     setSelectedMedia("image");
                 }
             }
@@ -1600,7 +1596,6 @@ ${product?.desc}
                         <div
                             className="
   h-fit
-  lg:-mt-[430px]
   rounded-[32px]
   border
   border-[#D8E0C5]
@@ -1890,28 +1885,7 @@ ${product?.desc}
                                     "No description available."}
 
                             </p>
-                            {/* Specifications Table */}
-                            {specificationsList.length > 0 && (
-                                <div className="mt-10 overflow-x-auto rounded-2xl border border-[#D6DEC0]">
-                                    <table className="w-full border-collapse">
-                                        <tbody>
-                                            {specificationsList.map((item, index) => (
-                                                <tr
-                                                    key={index}
-                                                    className="border-b border-[#D6DEC0]/60 last:border-b-0 transition hover:bg-[#F5F7EC]"
-                                                >
-                                                    <td className="w-1/3 bg-[#F5F7EC]/80 px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-[#667A32]">
-                                                        {item.label}
-                                                    </td>
-                                                    <td className="px-5 py-3.5 text-sm font-semibold text-[#283616]">
-                                                        {item.value}
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            )}
+
 
 
                             {/* SEO Content */}

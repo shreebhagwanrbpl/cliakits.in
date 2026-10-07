@@ -7,7 +7,7 @@ import SectionTitle from "@/components/SectionTitle";
 import ProductCard from "@/components/ProductCard";
 import ContactForm from "@/components/ContactForm";
 import { fetchAllDynamicProducts, normalizeProduct } from "@/lib/fetchProducts";
-import { subscribeToCatalog } from "@/lib/data-fetcher";
+import { subscribeToCatalog } from "@/lib/client-api";
 import { Search, X, Filter, Package, ShieldCheck, ArrowRight, Loader2 } from "lucide-react";
 
 function ProductsContent({ city }) {
@@ -67,9 +67,16 @@ function ProductsContent({ city }) {
     loadInitialProducts();
 
     // Subscribe to real-time catalog changes from Firestore
-    const unsubscribe = subscribeToCatalog((updatedCatalog) => {
-      if (isMounted && Array.isArray(updatedCatalog)) {
-        const normalized = updatedCatalog
+    const unsubscribe = subscribeToCatalog((snapOrArray) => {
+      if (!isMounted) return;
+      const rawList = Array.isArray(snapOrArray)
+        ? snapOrArray
+        : Array.isArray(snapOrArray?.docs)
+          ? snapOrArray.docs.map((d) => (typeof d?.data === "function" ? d.data() : d))
+          : [];
+
+      if (rawList.length > 0) {
+        const normalized = rawList
           .map((item) => normalizeProduct(item))
           .filter(
             (item) =>
@@ -81,6 +88,7 @@ function ProductsContent({ city }) {
         setProducts(normalized);
       }
     });
+
 
     return () => {
       isMounted = false;

@@ -4,8 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { doc, getDoc, collection, getDocs } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { doc, getDoc, collection, getDocs } from "@/lib/client-api";
+import { db } from "@/lib/client-api";
 import { motion } from "framer-motion";
 import {
   Microscope,
@@ -137,41 +137,40 @@ export default function Home({ city }) {
   };
 
   useEffect(() => {
+    let isMounted = true;
     const fetchData = async () => {
       try {
-        // Fetch home page configuration (title, description, buttons, carousel media)
-        try {
-          const homeSnap = await getDoc(
-            doc(db, "websites", "cliakitsin", "pages", "home")
-          );
-          if (homeSnap.exists()) {
-            setHomeData(homeSnap.data());
-          }
-        } catch (homeErr) {
-          console.error("Error fetching home data:", homeErr);
+        const [homeSnap, contactSnap, serviceSnap, fetchedProducts] = await Promise.all([
+          getDoc(doc(db, "websites", "cliakitsin", "pages", "home")).catch((err) => {
+            console.error("Error fetching home data:", err);
+            return null;
+          }),
+          getDoc(doc(db, "websites", "cliakitsin", "pages", "contact")).catch((err) => {
+            console.error("Error fetching contact data:", err);
+            return null;
+          }),
+          getDoc(doc(db, "websites", "cliakitsin", "pages", "services")).catch((err) => {
+            console.error("Error fetching services data:", err);
+            return null;
+          }),
+          fetchAllDynamicProducts().catch((err) => {
+            console.error("Error fetching products data:", err);
+            return [];
+          }),
+        ]);
+
+        if (!isMounted) return;
+
+        if (homeSnap && homeSnap.exists && homeSnap.exists()) {
+          setHomeData(homeSnap.data());
         }
 
-        // Fetch contact information for dynamic helpline info
-        try {
-          const contactSnap = await getDoc(
-            doc(db, "websites", "cliakitsin", "pages", "contact")
-          );
-          if (contactSnap.exists()) {
-            setContactInfo(contactSnap.data().contactInfo || []);
-          }
-        } catch (contactErr) {
-          console.error("Error fetching contact data:", contactErr);
+        if (contactSnap && contactSnap.exists && contactSnap.exists()) {
+          setContactInfo(contactSnap.data().contactInfo || []);
         }
 
-        // Fetch services directly from the Services Admin data.
-        // No static service fallback is used.
-        const serviceSnap = await getDoc(
-          doc(db, "websites", "cliakitsin", "pages", "services")
-        );
-
-        if (serviceSnap.exists()) {
+        if (serviceSnap && serviceSnap.exists && serviceSnap.exists()) {
           const savedServices = serviceSnap.data().services;
-
           const dbServices = Array.isArray(savedServices)
             ? savedServices.filter(
               (service) =>
@@ -179,15 +178,10 @@ export default function Home({ city }) {
                 (service.title?.trim() || service.desc?.trim())
             )
             : [];
-
-          setServices(dbServices);
+          setServices(dbServices.slice(0, 3));
         } else {
           setServices([]);
         }
-
-        // Fetch products dynamically from Firestore.
-        // No static product fallback is used.
-        const fetchedProducts = await fetchAllDynamicProducts();
 
         const validProducts = Array.isArray(fetchedProducts)
           ? fetchedProducts.filter(
@@ -201,24 +195,29 @@ export default function Home({ city }) {
         setProducts(validProducts);
       } catch (err) {
         console.error("Error fetching home dynamic data:", err);
-
-        // If Firebase fails, keep both sections empty.
-        // Never restore static fallback data.
-        setServices([]);
-        setProducts([]);
+        if (isMounted) {
+          setServices([]);
+          setProducts([]);
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
     fetchData();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
-  // Home page intentionally shows only 3 products.
-  // No category tabs / "All" filter are rendered here.
+  // Home page intentionally shows only 3 products and 3 services.
   const featuredProducts = products
     .filter((product) => product && typeof product === "object" && product.id)
     .slice(0, 3);
+
 
   const serviceIcons = [
     <Microscope size={28} key={1} />,

@@ -2,8 +2,8 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { doc, getDoc } from "@/lib/client-api";
+import { db } from "@/lib/client-api";
 import PageBanner from "@/components/PageBanner";
 import SectionTitle from "@/components/SectionTitle";
 import ContactForm from "@/components/ContactForm";
@@ -55,41 +55,48 @@ export default function ContactPage() {
       : null;
 
   useEffect(() => {
-    const loadContact = async () => {
+    let isMounted = true;
+
+    const loadData = async () => {
       try {
-        const snap = await getDoc(
-          doc(db, "websites", "cliakitsin", "pages", "contact")
-        );
-        if (snap.exists()) {
-          setContactInfo(snap.data().contactInfo || []);
+        const promises = [
+          getDoc(doc(db, "websites", "cliakitsin", "pages", "contact")).catch((err) => {
+            console.error("Error loading contact data:", err);
+            return null;
+          }),
+        ];
+
+        if (currentDistrict) {
+          promises.push(
+            getDoc(doc(db, "websites", "cliakitsin", "districts", currentDistrict)).catch((err) => {
+              console.error("Error loading district data:", err);
+              return null;
+            })
+          );
         }
-      } catch (err) {
-        console.error("Error loading contact data:", err);
+
+        const [contactSnap, districtSnap] = await Promise.all(promises);
+
+        if (isMounted) {
+          if (contactSnap && contactSnap.exists && contactSnap.exists()) {
+            setContactInfo(contactSnap.data().contactInfo || []);
+          }
+          if (districtSnap && districtSnap.exists && districtSnap.exists()) {
+            setDistrictData(districtSnap.data());
+          }
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
 
-    loadContact();
-  }, []);
+    loadData();
 
-  useEffect(() => {
-    const loadDistrict = async () => {
-      if (!currentDistrict) return;
-      try {
-        const snap = await getDoc(
-          doc(db, "websites", "cliakitsin", "districts", currentDistrict)
-        );
-        if (snap.exists()) {
-          setDistrictData(snap.data());
-        }
-      } catch (err) {
-        console.error("Error loading district data:", err);
-      }
+    return () => {
+      isMounted = false;
     };
-
-    loadDistrict();
   }, [currentDistrict]);
+
 
   const getFieldIcon = (label = "") => {
     const l = label.toLowerCase();

@@ -1,43 +1,19 @@
-import { db } from "@/lib/firebase";
-import { collection, getDocs } from "firebase/firestore";
-import { fallbackProducts, makeSlug } from "@/data/productsData";
-import { fetchFullCatalog } from "@/lib/data-fetcher";
+"use client";
 
-/**
- * Standardizes raw Firestore product/item document object to standard shape
- */
+import { makeSlug } from "@/data/productsData";
+import { WEBSITE_ID } from "@/lib/catalog-utils";
+
 export function normalizeProduct(item, defaultCategory = "Diagnostic Equipment") {
   if (!item || typeof item !== "object") return null;
-
-  const title = (item.title || item.name || item.productName || item.itemName || "").trim();
+  const title = String(item.title || item.name || item.productName || item.itemName || "").trim();
   if (!title) return null;
-
   const rawSlug = item.slug || item.productSlug || item.itemSlug || makeSlug(title);
-  const category = item.category || item.categoryName || defaultCategory || "Diagnostic Equipment";
+  const category = item.category || item.categoryName || defaultCategory;
   const subCategory = item.subCategory || item["sub category"] || item.subCategoryName || "";
-
-  const description =
-    item.desc ||
-    item.description ||
-    item.detail ||
-    item.summary ||
-    "";
-
-  const image =
-    item.image ||
-    item.imgUrl ||
-    item.imageUrl ||
-    (Array.isArray(item.images) && item.images[0]) ||
-    "";
-
-  let images = Array.isArray(item.images) && item.images.length > 0 ? item.images : image ? [image] : [];
-
-  let features = Array.isArray(item.features)
-    ? item.features.filter(Boolean)
-    : typeof item.features === "string"
-      ? item.features.split(",").map((f) => f.trim()).filter(Boolean)
-      : [];
-
+  const description = item.desc || item.description || item.detail || item.summary || "";
+  const image = item.image || item.imgUrl || item.imageUrl || (Array.isArray(item.images) ? item.images[0] : "") || "";
+  const images = Array.isArray(item.images) && item.images.length ? item.images : image ? [image] : [];
+  const features = Array.isArray(item.features) ? item.features.filter(Boolean) : typeof item.features === "string" ? item.features.split(",").map(f => f.trim()).filter(Boolean) : [];
   return {
     ...item,
     id: item.uid || item.id || item.categoryProductId || rawSlug,
@@ -71,52 +47,46 @@ export function normalizeProduct(item, defaultCategory = "Diagnostic Equipment")
   };
 }
 
-/**
- * Fetches dynamic products from all possible Firestore locations used by admin panel
- */
+let cachedProducts = null;
+let lastFetchTime = 0;
+let fetchPromise = null;
+const CACHE_DURATION = 60 * 1000; // 60 seconds
+
 export async function fetchAllDynamicProducts() {
-  const productsMap = new Map();
+  const now = Date.now();
+  if (cachedProducts && (now - lastFetchTime < CACHE_DURATION)) {
+    return cachedProducts;
+  }
 
-  const addItems = (itemsArray, defaultCat) => {
-    if (!Array.isArray(itemsArray)) return;
-    itemsArray.forEach((raw) => {
-      const p = normalizeProduct(raw, defaultCat);
-      if (p && p.slug && !productsMap.has(p.slug)) {
-        productsMap.set(p.slug, p);
+  if (fetchPromise) {
+    return fetchPromise;
+  }
+
+  fetchPromise = (async () => {
+    try {
+      const response = await fetch(`/api/catalog?websiteId=${encodeURIComponent(WEBSITE_ID)}`, {
+        headers: { Accept: "application/json" },
+      });
+      const body = await response.json();
+      if (!response.ok) throw new Error(body?.error || `Catalog API ${response.status}`);
+      const raw = body?.products ?? body?.data?.products ?? body?.data ?? body;
+      const map = new Map();
+      for (const item of Array.isArray(raw) ? raw : []) {
+        const p = normalizeProduct(item);
+        if (p && p.slug && !map.has(p.slug)) map.set(p.slug, p);
       }
-    });
-  };
-
-  try {
-    // 1. Fetch full catalog via data-fetcher (subcategories, category products, legacy products)
-    const fullCatalog = await fetchFullCatalog();
-    if (Array.isArray(fullCatalog) && fullCatalog.length > 0) {
-      addItems(fullCatalog);
+      const list = [...map.values()];
+      cachedProducts = list;
+      lastFetchTime = Date.now();
+      return list;
+    } catch (error) {
+      console.error("Error fetching dynamic products from Admin API:", error);
+      return cachedProducts || [];
+    } finally {
+      fetchPromise = null;
     }
+  })();
 
-    // 2. Fetch extra fallback collections if any
-    const extraSnapshots = await Promise.allSettled([
-      getDocs(collection(db, "websites", "cliakitsin", "products")),
-      getDocs(collection(db, "websites", "cliakitsin", "items")),
-      getDocs(collection(db, "products")),
-      getDocs(collection(db, "items")),
-    ]);
-
-    extraSnapshots.forEach((res) => {
-      if (res.status === "fulfilled" && !res.value.empty) {
-        res.value.forEach((docSnap) => {
-          addItems([{ id: docSnap.id, ...docSnap.data() }]);
-        });
-      }
-    });
-  } catch (err) {
-    console.error("Error fetching dynamic products from Firestore:", err);
-  }
-
-  const fetchedList = Array.from(productsMap.values());
-  if (fetchedList.length > 0) {
-    return fetchedList;
-  }
-
-  return fallbackProducts;
+  return fetchPromise;
 }
+
